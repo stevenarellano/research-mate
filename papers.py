@@ -18,8 +18,9 @@ class ResearchPaper:
 
         # ensures that the folder does not contain more than 5 files (since we don't have a db)
         self.clear_folder_if_more_than_five_files()
-        self.download()
-        self.convert_pdf_to_txt()
+        if not self.is_txt_file_exists():
+            self.download()
+            self.convert_pdf_to_txt()
         self.prepare_index()
 
     def download(self):
@@ -28,7 +29,7 @@ class ResearchPaper:
         paper.download_pdf(dirpath=self.paper_directory,
                            filename=self.pdf_file_path)
 
-    def convert_pdf_to_txt(self):
+    def convert_pdf_to_txt(self) -> str:
         loader = PyPDFLoader(os.path.join(
             self.paper_directory, self.pdf_file_path))
         pages = loader.load_and_split()
@@ -46,9 +47,10 @@ class ResearchPaper:
             self.paper_directory, self.txt_file_path))
         self.index = VectorstoreIndexCreator().from_loaders([loader])
 
-    def query(self, q):
+    def query(self, q) -> str:
         response = self.index.query(q)
-        print(response)
+        print("QUERY: ", q)
+        print("RESPONSE: ", response)
         return response
 
     def has_more_than_five_files(self) -> bool:
@@ -60,3 +62,6 @@ class ResearchPaper:
             files = os.listdir(self.paper_directory)
             for file in files:
                 os.remove(os.path.join(self.paper_directory, file))
+
+    def is_txt_file_exists(self) -> bool:
+        return os.path.exists(os.path.join(self.paper_directory, self.txt_file_path))

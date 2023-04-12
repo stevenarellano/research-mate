@@ -49,8 +49,6 @@ class ResearchPaper:
 
     def query(self, q) -> str:
         response = self.index.query(q)
-        print("QUERY: ", q)
-        print("RESPONSE: ", response)
         return response
 
     def has_more_than_five_files(self) -> bool:

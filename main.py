@@ -1,12 +1,42 @@
+import click
+import re
 
-# %%
 from papers import ResearchPaper
+from dotenv import load_dotenv
 
-# %%
-paper_id = "2303.17590"
-research_paper = ResearchPaper(paper_id)
+load_dotenv()
+
+research_paper: ResearchPaper | None = None
 
 
-# %%R
-query_result = research_paper.query("what happens when reasoning fails?")
-print(query_result)
+@click.command()
+def start():
+    global research_paper
+    id = str(input(click.style(
+        '[PROMPT] Please enter the arxiv paper id: ', fg='blue', bold=True)))
+
+    pattern = r'\d+\.\d+'
+    match = re.search(pattern, id)
+
+    if match:
+        click.secho(
+            f'[LOADING] Great choice! Downloading arxiv paper {id} now...', fg='green')
+        research_paper = ResearchPaper(id)
+        query_paper()
+    else:
+        click.secho('[ERROR] Invalid arxiv paper id!', fg='red')
+        start()
+        return
+
+
+def query_paper():
+    query = input(click.style(
+        '[PROMPT] What would you like to ask about the paper? (ctrl + c to exit): ', fg='blue', bold=True))
+    response = research_paper.query(query)
+    click.secho(f'[QUERY] {query}', fg='white')
+    click.secho(f'[RESPONSE] {response}', fg='white')
+    query_paper()
+
+
+if __name__ == '__main__':
+    start()

@@ -1,4 +1,4 @@
-# research-mate
+# researchmate
 
 
 ### necessary files

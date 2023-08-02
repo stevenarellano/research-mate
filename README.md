@@ -1,6 +1,6 @@
 # resmate
 
-resmate is a command-line tool for asking research papers questions. It is built using Python and the Click library.
+resmate is a command-line tool for asking arXiv research papers questions. It is built using Python, the Click library, and arXiv's API.
 
 ## Installation
 
